@@ -13,7 +13,7 @@ if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
     }
   });
 } else {
-  console.error('MetaMaskがインストールされていません。');
+  console.error('MetaMask is not installed.');
 }
 
 export default web3;
