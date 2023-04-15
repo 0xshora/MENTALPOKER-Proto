@@ -204,6 +204,14 @@
         nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
         blockExplorerUrls: ['https://testnet-zkevm.polygonscan.com'],
       },
+      {
+        name: 'Taiko',
+        chainId: '0x28C5A',
+        rpcUrl: 'https://l2rpc.hackathon.taiko.xyz(opens in a new tab)', // ここにあなたのプロジェクトIDを入力してください
+        chainName: 'Taiko',
+        nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+        blockExplorerUrls: ['https://l2explorer.hackathon.taiko.xyz'],
+      },
     ];
 
 
