@@ -19,6 +19,17 @@
 <script lang="ts">
   import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
   import range from './Range.vue';
+  ///Airtable呼び出し
+  import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
+  const AIRSTACK_ENDPOINT = 'https://api.airstack.xyz/gql';
+  const AIRSTACK_API_KEY = 'f99df63d97574e08aa8e5dbfb3d298f9';
+
+  const client = new ApolloClient({
+    uri: AIRSTACK_ENDPOINT,
+    cache: new InMemoryCache(),
+    headers: { Authorization: AIRSTACK_API_KEY },
+  });
+  ///Airtable呼び出し
 
   @Component({
     components: {
@@ -46,8 +57,90 @@
 
     private async buyIn() {
       this.closeBuyIn();
+      this.showNft();
       this.$emit('buyIn', this.buyInSize);
+
     }
+    private async showNft() {
+      let owners = ["vitalik.eth", "dwr.eth"];
+      let limit = 10;
+      let cursor = "";
+
+      let response = await this.getNFTs(owners, limit, cursor);
+      console.log(response);
+      return response;
+      // console.log('ここまで');
+      // let originalValue: string | undefined;
+      //   for (let i = 0; i < response.TokenBalance.length; i++) {
+      //     const contentValue = response.TokenBalance[i].tokenNfts.contentValue;
+      //     if (contentValue && contentValue.original !== undefined) {
+      //       originalValue = contentValue.original;
+      //     break;
+      //     }
+      //   }
+      //   if (originalValue !== undefined) {
+      //   console.log(originalValue);
+      // }
+      
+      
+      
+
+    }
+    private getNFTs = async (
+      owners: string[],
+      limit: number,
+      cursor: string
+    ): Promise<any> => {
+      const query = gql`
+        query MyQuery($cursor: String, $owners: [Identity!], $limit: Int) {
+          TokenBalances(
+            input: {
+              filter: {
+                owner: { _in: $owners },
+                tokenType: { _in: [ERC1155, ERC721] }
+              }
+              blockchain: ethereum
+              limit: $limit
+              cursor: $cursor
+            }
+          ) {
+            TokenBalance {
+              tokenAddress
+              amount
+              tokenNfts {
+                contentValue {
+                  image {
+                    original
+                  }
+                }
+              }
+              tokenType
+              owner {
+                primaryDomain {
+                  name
+                }
+              }
+            }
+            pageInfo {
+              prevCursor
+              nextCursor
+            }
+          }
+        }
+      `; 
+
+      const response = await client.query({
+        query,
+        variables: {
+          owners: owners,
+          limit: limit,
+          cursor: cursor,
+        },
+      });
+
+      return response.data.TokenBalances;
+    };
+
     private mounted() {
       this.buyInSize = this.min;
     }

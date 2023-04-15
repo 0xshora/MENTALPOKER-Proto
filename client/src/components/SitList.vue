@@ -99,6 +99,16 @@
   import map from '../utils/map';
   import {IRoom} from '@/interface/IRoom';
 
+  import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
+  const AIRSTACK_ENDPOINT = 'https://api.airstack.xyz/gql';
+  const AIRSTACK_API_KEY = 'f99df63d97574e08aa8e5dbfb3d298f9';
+
+  const client = new ApolloClient({
+    uri: AIRSTACK_ENDPOINT,
+    cache: new InMemoryCache(),
+    headers: { Authorization: AIRSTACK_API_KEY },
+  });
+
   @Component({
     components: {
       cardList,
@@ -127,13 +137,15 @@
       this.sitLinkNode = val;
     }
 
-    private buyIn(size: number) {
+    private async buyIn(size: number) {
       this.showBuyIn = false;
       this.currPlayer.counter += Number(size);
       this.$emit('buyIn', Number(size));
       this.sitDown(this.currSit);
+      console.log("hello")
+     
     }
-
+    
     private showHandCard(sit: ISit) {
       return sit.player?.userId === this.currPlayer?.userId;
     }
@@ -404,6 +416,14 @@
 
           .action-command {
             left: -22 / 3.75vw;
+          }
+          .icon {
+            width: 45 / 3.75vw;
+            height: 45 / 3.75vw;
+            font-size: 45px;
+            line-height: 45 / 3.75vw;
+            border-radius: 50%;
+            margin-bottom: 2px;
           }
 
           .type {
