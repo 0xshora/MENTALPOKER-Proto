@@ -23,6 +23,16 @@
           <div class="btn"  @click="createRoom"><span>create</span></div>
         </div>
       </div>
+      <div class="change-chain-container">
+          <div class="change-chain-btn btn" @click="showDropdown = !showDropdown">
+            <span>Change Chain</span>
+          </div>
+          <div class="chain-dropdown" v-show="showDropdown">
+            <div class="chain-option" v-for="(chain, index) in chains" :key="index" @click="changeChain(chain)">
+              {{ chain.name }}
+            </div>
+          </div>
+      </div>
       <div class="create-room btn"
           @click="showRoomConfig = true" ><span>create room</span>
       </div>
@@ -140,6 +150,96 @@
         
       } catch (e) {
         console.log(e);
+      }
+    }
+
+
+    private showDropdown = false;
+    private chains = [
+      {
+        name: 'Ethereum Mainnet',
+        chainId: '0x1',
+        rpcUrl: 'https://mainnet.infura.io/v3/9132a69c7c20454381e274ce4533f73d', // ここにあなたのプロジェクトIDを入力してください
+        chainName: 'Ethereum Mainnet',
+        nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+        blockExplorerUrls: ['https://etherscan.io/'],
+      },
+      {
+        name: 'Goerli',
+        chainId: '0x5',
+        rpcUrl: 'https://rpc2.sepolia.org/', // ここにあなたのプロジェクトIDを入力してください
+        chainName: 'Sepolia Testnet',
+        nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+        blockExplorerUrls: ['https://goerli.etherscan.io/'],
+      },
+      {
+        name: 'Sepolia',
+        chainId: '0xAA36A7',
+        rpcUrl: 'https://rpc2.sepolia.org/', // ここにあなたのプロジェクトIDを入力してください
+        chainName: 'Sepolia Testnet',
+        nativeCurrency: { name: 'SEP', symbol: 'SEP', decimals: 18 },
+        blockExplorerUrls: ['https://sepolia.etherscan.io/'],
+      },
+      {
+        name: 'Chiado',
+        chainId: '0x27D8',
+        rpcUrl: 'https://rpc.chiadochain.net', // ここにあなたのプロジェクトIDを入力してください
+        chainName: 'Chiado Testnet',
+        nativeCurrency: { name: 'xDai', symbol: 'xDai', decimals: 18 },
+        blockExplorerUrls: ['https://blockscout.com/gnosis/chiado'],
+      },
+      {
+        name: 'Scroll testnet',
+        chainId: '0x5',
+        rpcUrl: 'https://endpoints.omniatech.io/v1/eth/goerli/public', // ここにあなたのプロジェクトIDを入力してください
+        chainName: 'Chiado Testnet',
+        nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+        blockExplorerUrls: ['https://goerli.etherscan.io/'],
+      },
+      {
+        name: 'zkEVM Testnet',
+        chainId: '0x5A2',
+        rpcUrl: 'https://rpc.public.zkevm-test.net', // ここにあなたのプロジェクトIDを入力してください
+        chainName: 'Chiado Testnet',
+        nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+        blockExplorerUrls: ['https://testnet-zkevm.polygonscan.com'],
+      },
+    ];
+
+
+    private async changeChain(chain: { chainId: string; rpcUrl: string; chainName: string; nativeCurrency: any; blockExplorerUrls: string[] }) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: chain.chainId }],
+        });
+        this.$plugin.toast('The chain has been changed.');
+        this.showDropdown = false;
+      } catch (switchError) {
+        if (switchError.code === 4902 /* 4902 is the error code for an unrecognized chain ID */) {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: chain.chainId,
+                  chainName: chain.chainName,
+                  nativeCurrency: chain.nativeCurrency,
+                  rpcUrls: [chain.rpcUrl],
+                  blockExplorerUrls: chain.blockExplorerUrls,
+                },
+              ],
+            });
+            this.$plugin.toast('The chain was added and changed successfully.');
+            this.showDropdown = false;
+          } catch (addError) {
+            console.error(':', addError);
+            this.$plugin.toast('We failed to change the chain.');
+          }
+        } else {
+          console.error('We failed to change the chain:', switchError);
+          this.$plugin.toast('We failed to change the chain');
+        }
       }
     }
 
