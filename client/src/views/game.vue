@@ -182,6 +182,8 @@
     private messageList: any[] = [];
     private showRecord = false;
 
+    private channel = 
+
      // NFTリスト関連
     // private tokenBalances: any[] = [];
     // private prevCursor = "";
@@ -216,6 +218,14 @@
         this.doCountDown();
       }
     }
+
+    // private async sendMessage(channel, message) {
+    //   try {
+    //     await channel.sendMessage(message);
+    //   } catch (error) {
+    //     console.error("Failed to send message:", error);
+    //   }
+    // }
 
     get msgListReverse() {
       const msg = JSON.parse(JSON.stringify(this.messageList));
@@ -494,6 +504,9 @@
         }
 
         if (msg.action === 'broadcast') {
+          
+          // sendMessage(this.channel, msg.message.msg);
+
           this.messageList.push({
             message: msg.message.msg || '',
             top: Math.random() * 50 + 10,

@@ -51,10 +51,10 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (to.meta.title) {
+  if (to.meta?.title) {
     document.title = to.meta.title;
   }
-  if (to.meta.needLogin) {
+  if (to.meta?.needLogin) {
     try {
       const result = await service.checkLogin();
       console.log(result);

@@ -4,12 +4,12 @@
 module.exports = {
   presets: [
     // ... 他のプリセットがある場合
-    // [
-    //   '@babel/preset-env',
-    //   {
-    //     targets: '> 0.25%, not dead',
-    //   },
-    // ],
+    [
+      '@babel/preset-env',
+      {
+        targets: '> 0.25%, not dead',
+      },
+    ],
     '@vue/cli-plugin-babel/preset',
   ],
   plugins: [
@@ -24,7 +24,6 @@ module.exports = {
     development: {
       sourceType: 'unambiguous',
       ignore: [
-        // これらのモジュールをトランスパイルする必要がある場合には、コメントアウトを解除してください
         // /node_modules\/core-js/,
         // /node_modules\/webpack/,
         // /node_modules\/regenerator-runtime/,
