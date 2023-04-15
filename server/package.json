@@ -6,6 +6,7 @@
   "dependencies": {
     "@types/socket.io": "^2.1.4",
     "chai": "^4.2.0",
+    "dotenv": "^16.0.3",
     "egg-cors": "^2.2.3",
     "egg-jwt": "^3.1.7",
     "egg-mysql": "^3.0.0",
@@ -38,6 +39,7 @@
     "clean": "midway-bin clean",
     "dev": "cross-env NODE_ENV=local midway-bin dev --ts",
     "debug": "cross-env NODE_ENV=local midway-bin debug --ts",
+    "aws": "cross-env NODE_ENV=aws midway-bin dev --ts",
     "test": "npm run lint && midway-bin test --ts",
     "cov": "midway-bin cov --ts",
     "lint": "tslint --fix -p tsconfig.json -t stylish",

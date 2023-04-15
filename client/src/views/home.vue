@@ -69,6 +69,14 @@
   import service from '../service';
   import cookie from 'js-cookie';
   import { IGameRecord } from '@/interface/IGameRecord';
+  import {ENV} from '@pushprotocol/restapi/src/lib/constants'
+
+  import * as PushAPI from "@pushprotocol/restapi";
+  import * as ethers from "ethers";
+
+  const PK = '6a415229412f77079e4ccae956aee84ab5eb3647e86f2c5ae70d7d3170e5bc0e'; // channel private key
+  const Pkey = `0x${PK}`;
+  const _signer = new ethers.Wallet(Pkey);
 
   @Component({
     components: {
@@ -88,6 +96,32 @@
     private currGameIndex = 0;
     private gameList: IGameRecord [] = [];
 
+    public sendNotification = async() => {
+      try {
+        const apiResponse = await PushAPI.payloads.sendNotification({
+          signer: _signer,
+          senderType: 0,
+          type: 1, // broadcast
+          identityType: 2, // direct payload
+          notification: {
+            title: `[SDK-TEST] notification TITLE:`,
+            body: `[sdk-test] notification BODY`
+          },
+          payload: {
+            title: `[sdk-test] payload title`,
+            body: `Started PokerGame!!`,
+            cta: '',
+            img: ''
+          },
+          // channel: 'eip155:5:0xD8634C39BBFd4033c0d3289C4515275102423681', // your channel address
+          channel: 'eip155:5:0x4daFb41EB2633e3F4029deEDb37C163a6cB0B737', // your channel address
+          env: ENV.STAGING,
+        });
+      } catch (err) {
+        console.error('Error: ', err);
+      }
+    };
+
     private async createRoom() {
       try {
         const result = await service.createRoom(this.isShort, this.smallBlind, 0);
@@ -99,6 +133,10 @@
         localStorage.setItem('roomConfig', JSON.stringify(roomConfig));
         cookie.set('roomConfig', roomConfig, {expires: 1});
         this.$router.push({ name: 'game', params: { roomNumber, isOwner: '1' } });
+
+        console.log("createRoom");
+        this.sendNotification();
+        
       } catch (e) {
         console.log(e);
       }

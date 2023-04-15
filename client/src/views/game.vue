@@ -49,6 +49,7 @@
         <i @click="standUp()">stand Up</i>
         <i @click="showCounterRecord">counter record</i>
         <i @click="closeAudio()">audio ({{`${audioStatus ? 'open' : 'close'}`}})</i>
+        <i @click="showTokens()">show Tokens</i>
       </div>
     </div>
     <BuyIn :showBuyIn.sync='showBuyIn'
@@ -93,6 +94,21 @@
   import gameRecord from '@/components/GameRecord.vue';
   import {IGameRecord} from '@/interface/IGameRecord';
 
+  //
+  // import { defineComponent, ref, onMounted } from "vue";
+  import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
+  // import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+
+
+  const AIRSTACK_ENDPOINT = 'https://api.airstack.xyz/gql';
+  const AIRSTACK_API_KEY = 'f99df63d97574e08aa8e5dbfb3d298f9';
+
+  const client = new ApolloClient({
+    uri: AIRSTACK_ENDPOINT,
+    cache: new InMemoryCache(),
+    headers: { Authorization: AIRSTACK_API_KEY },
+  });
+
   export enum ECommand {
     CALL   = 'call',
     ALL_IN = 'allin',
@@ -126,6 +142,7 @@
       sendMsg,
     },
   })
+  
   export default class Game extends Vue {
     public socket: any = null;
     // in the room user
@@ -151,6 +168,7 @@
     private msg = '';
     private time = ACTION_TIME;
     private timeSt = 0;
+    // private timeSt: null as number | NodeJS.Timeout | null;
     private commandRecordList = [];
     private actionEndTime = 0;
     private showCommandRecord = false;
@@ -163,6 +181,11 @@
     };
     private messageList: any[] = [];
     private showRecord = false;
+
+     // NFTリスト関連
+    // private tokenBalances: any[] = [];
+    // private prevCursor = "";
+    // private nextCursor = "";
 
     @Watch('players')
     private playerChange(players: IPlayer[]) {
@@ -283,7 +306,7 @@
         const now = Date.now();
         this.time = Math.floor((this.actionEndTime - now) / 1000);
         this.doCountDown();
-      }, 1000);
+      }, 1000) as unknown as number;
     }
 
     private PokeStyle(cards: string[]) {
@@ -514,6 +537,7 @@
         console.log(e);
       }
     }
+
     private standUp() {
       // player in the game
       if (this.currPlayer && this.currPlayer.status === 1) {
@@ -608,13 +632,80 @@
       //   }
       // });
     }
+
+    private async showTokens() {
+      // player in the game
+      // if (this.currPlayer && this.currPlayer.status === 1) {
+      //   this.$plugin.toast('sorry, please fold you hand!');
+      //   return;
+      // }
+      let owners = ["vitalik.eth", "dwr.eth"];
+      let limit = 10;
+      let cursor = "";
+
+      let response = await this.getAllNFTs(owners, limit, cursor);
+      let tokenBalances = response.TokenBalance;
+      // let prevCursor = response.pageInfo.prevCursor;
+      // let nextCursor = response.pageInfo.nextCursor;
+
+      console.log(tokenBalances);
+      this.showSetting = false;
+    }
+
+    private getAllNFTs = async (
+      owners: string[],
+      limit: number,
+      cursor: string
+    ): Promise<any> => {
+      const query = gql`
+        query MyQuery($cursor: String, $owners: [Identity!], $limit: Int) {
+          TokenBalances(
+            input: {
+              filter: {
+                owner: { _in: $owners },
+                tokenType: { _in: [ERC1155, ERC721] }
+              }
+              blockchain: ethereum
+              limit: $limit
+              cursor: $cursor
+            }
+          ) {
+            TokenBalance {
+              tokenAddress
+              amount
+              tokenType
+              owner {
+                primaryDomain {
+                  name
+                }
+              }
+            }
+            pageInfo {
+              prevCursor
+              nextCursor
+            }
+          }
+        }
+      `; 
+      const response = await client.query({
+        query,
+        variables: {
+          owners: owners,
+          limit: limit,
+          cursor: cursor,
+        },
+      });
+      return response.data.TokenBalances;
+    };
+
   }
 </script>
 
 <style lang="less"
        scoped>
   .game-container {
-    background: radial-gradient(#4daafb, #051167);
+    // background: radial-gradient(#4daafb, #051167);
+    background: #1C1C28;
     background-size: 100% 100%;
     height: 100vh;
     width: 100vw;
