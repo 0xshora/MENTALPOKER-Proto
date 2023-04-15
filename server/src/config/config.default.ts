@@ -76,7 +76,7 @@ export default (appInfo: EggAppInfo) => {
 
   // jsonwebtoken
   config.jwt = {
-    secret: '123456', // for test
+    secret: 'secret',
     enable: true,
     match(ctx: Context) {
       const reg = /login|register/;
@@ -95,7 +95,7 @@ export default (appInfo: EggAppInfo) => {
     // redis: {
     //   host: '127.0.0.1',
     //   port: 6379,
-    //   password: 'MentalPoker2023',
+    //   password: 'password',
     // },
     redis: {
       host: process.env.REDIS_HOST,
@@ -108,7 +108,7 @@ export default (appInfo: EggAppInfo) => {
   //   client: {
   //     port: 6379,
   //     host: '127.0.0.1',
-  //     password: 'MentalPoker2023',
+  //     password: 'password',
   //     db: 0,
   //   },
   // };
@@ -129,7 +129,7 @@ export default (appInfo: EggAppInfo) => {
   //     // userName
   //     user: 'root',
   //     // password
-  //     password: 'MentalPokerSQL',
+  //     password: 'password',
   //     // database name
   //     database: 'poker',
   //   },
