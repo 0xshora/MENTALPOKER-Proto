@@ -98,6 +98,9 @@
   import { PokerStyle } from '@/utils/PokerStyle';
   import map from '../utils/map';
   import {IRoom} from '@/interface/IRoom';
+  import IERC20_ABI from '@/assets/IERC20_ABI.json';
+  import { mapState } from 'vuex';
+  import web3 from '@/utils/web3';
 
   import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
   const AIRSTACK_ENDPOINT = 'https://api.airstack.xyz/gql';
@@ -113,6 +116,9 @@
     components: {
       cardList,
       BuyIn,
+    },
+    computed: {
+      ...mapState(['account', 'web3']),
     },
   })
   export default class SitList extends Vue {
