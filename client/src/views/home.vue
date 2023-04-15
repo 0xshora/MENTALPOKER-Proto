@@ -42,6 +42,7 @@
         <div class="input-bd"
              :class="{error: isError}">
           <div class="input-name iconfont icon-password"></div>
+          <!-- use 0x4d224452801ACEd8B2F0aebE155379bb5D594381 for APE COIN -->
           <div class="input-text">
             <input type="tel"
                    maxlength="6"

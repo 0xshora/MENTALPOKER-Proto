@@ -16,16 +16,6 @@ Detail: [client-readme](https://github.com/wzdwc/TexasPokerGame/tree/master/clie
 │  └─poker.sql
 └─server
 ```
-## Demo
-See: [demo](http://www.jojgame.com)
-![img](https://github.com/wzdwc/TexasPokerGame/blob/master/gif/qr.jpg)
 
-![img](https://github.com/wzdwc/TexasPokerGame/blob/master/gif/demo1.gif)
-
-![img](https://github.com/wzdwc/TexasPokerGame/blob/master/gif/demo2.gif)
-
-![img](https://github.com/wzdwc/TexasPokerGame/blob/master/gif/demo3.gif)
-
-![img](https://github.com/wzdwc/TexasPokerGame/blob/master/gif/demo4.gif)
 ## License
 The MIT License (MIT)

@@ -76,7 +76,7 @@ export default (appInfo: EggAppInfo) => {
 
   // jsonwebtoken
   config.jwt = {
-    secret: '123456',
+    secret: '123456', // for test
     enable: true,
     match(ctx: Context) {
       const reg = /login|register/;

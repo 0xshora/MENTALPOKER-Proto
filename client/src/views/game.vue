@@ -101,7 +101,7 @@
 
 
   const AIRSTACK_ENDPOINT = 'https://api.airstack.xyz/gql';
-  const AIRSTACK_API_KEY = 'f99df63d97574e08aa8e5dbfb3d298f9';
+  const AIRSTACK_API_KEY = '<API_KEY>';
 
   const client = new ApolloClient({
     uri: AIRSTACK_ENDPOINT,
